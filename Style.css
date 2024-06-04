@@ -1,42 +1,109 @@
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #1e1e1e;
+    color: #d4d4d4;
     margin: 0;
-    padding: 20px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    overflow: hidden;
 }
 
-#weatherApp {
-    max-width: 600px;
-    margin: auto;
-    background: white;
-    padding: 20px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+.container {
     text-align: center;
+    background-color: #2d2d2d;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    width: 80%;
+    max-width: 600px;
 }
 
-#cityInput {
+h1 {
+    font-size: 2rem;
+    margin-bottom: 0px;
+    color: #61dafb;
+}
+
+input[type="text"] {
+    width: 80%;
     padding: 10px;
-    width: calc(100% - 22px);
     margin-bottom: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    background-color: #333;
+    color: #fff;
 }
 
 button {
-    padding: 10px 15px;
-    background-color: #007BFF;
-    color: white;
+    padding: 10px 20px;
+    font-size: 1rem;
+    color: #fff;
+    background-color: #61dafb;
     border: none;
+    border-radius: 5px;
     cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 button:hover {
-    background-color: #0056b3;
-}
-
-#currentWeather, #forecast {
-    margin-top: 20px;
+    background-color: #21a1f1;
 }
 
 .weatherIcon {
-    width: 50px;
-    height: 50px;
+    width: 100px;
+    height: 100px;
+}
+
+#currentWeather  {
+    margin-top: 0px;
+    padding: 20px;
+    background-color: #2d2d2d;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+#forecast {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #2d2d2d;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+#forecast {
+    display: flex;
+    justify-content: center;
+}
+
+.forecast-flex {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+}
+
+#forecast div {
+    margin: 0 10px;
+    padding: 10px;
+    background-color: #333;
+    border-radius: 5px;
+    text-align: center;
+    flex: 1;
+}
+
+h2 {
+    color: #61dafb;
+}
+
+p {
+    margin: 5px 0;
+}
+
+img.weatherIcon {
+    border-radius: 50%;
 }
