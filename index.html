@@ -7,12 +7,17 @@
     <link rel="stylesheet" href="Style.css">
 </head>
 <body>
-    <div id="weatherApp">
-        <h1>Weather Forecast</h1>
-        <input type="text" id="cityInput" placeholder="Wpisz nazwę miasta">
+    <div class="container">
+        <h1>Weather App</h1>
+        <input type="text" id="cityInput" placeholder="Enter city name">
         <button id="fetchWeatherBtn">Get Weather</button>
-        <div id="currentWeather"></div>
-        <div id="forecast"></div>
+        <div id="weatherContainer">
+            <div id="currentWeather" style="display: none;"></div>
+            <div class="forecast-container">
+                <h2 id="forecastHeader" style="display: none;">5-Day Forecast</h2>
+                <div id="forecast" style="display:none;"></div>
+            </div>
+        </div>
     </div>
     <script src="script.js"></script>
 </body>

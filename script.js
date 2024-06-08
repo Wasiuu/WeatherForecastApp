@@ -1,94 +1,92 @@
 document.getElementById('fetchWeatherBtn').addEventListener('click', fetchWeather);
 
 function fetchWeather() {
-    const city = document.getElementById('cityInput').value.trim();
-    
+    const city = document.getElementById('cityInput').value;
+    const apiKey = '1707a4c7abe4ab14246a23af2fde2feb'; // replace with your OpenWeatherMap API key
+
     if (!city) {
         alert('Please enter a city name');
         return;
     }
 
-    const apiKey = '1707a4c7abe4ab14246a23af2fde2feb';  // Twój klucz API z OpenWeatherMap
     const currentWeatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`;
-    const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=metric&appid=${apiKey}`;
-
-    console.log('Current Weather URL:', currentWeatherUrl);
-    console.log('Forecast URL:', forecastUrl);
+    const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=metric&cnt=5&appid=${apiKey}`;
 
     fetch(currentWeatherUrl)
         .then(response => {
-            console.log('Current Weather Response Status:', response.status, response.statusText);
             if (!response.ok) {
-                throw new Error(`Network response was not ok: ${response.status} ${response.statusText}`);
+                throw new Error(`Network response was not ok: ${response.statusText}`);
             }
             return response.json();
         })
         .then(data => {
-            console.log('Current Weather Data:', data);
             displayCurrentWeather(data);
         })
         .catch(error => {
             console.error('Error fetching current weather:', error);
-            alert('Error fetching current weather. Please check the city name and API key.');
+            document.getElementById('currentWeather').style.display = 'none';
+            alert('Error fetching current weather. Please try again.');
         });
 
     fetch(forecastUrl)
         .then(response => {
-            console.log('Forecast Response Status:', response.status, response.statusText);
             if (!response.ok) {
-                throw new Error(`Network response was not ok: ${response.status} ${response.statusText}`);
+                throw new Error(`Network response was not ok: ${response.statusText}`);
             }
             return response.json();
         })
         .then(data => {
-            console.log('Forecast Data:', data);
             displayForecast(data);
         })
         .catch(error => {
             console.error('Error fetching forecast:', error);
-            alert('Error fetching forecast. Please check the city name and API key.');
+            document.getElementById('forecast').style.display = 'none';
+            alert('Error fetching forecast. Please try again.');
         });
 }
 
 function displayCurrentWeather(data) {
-    const weatherContainer = document.getElementById('currentWeather');
-    weatherContainer.innerHTML = `
-        <h2>Current Weather in ${data.name}</h2>
+    const currentWeatherDiv = document.getElementById('currentWeather');
+    currentWeatherDiv.style.display = 'block';
+    currentWeatherDiv.innerHTML = `
+        <h2>Current Weather</h2>
+        <p>${data.name}, ${data.sys.country}</p>
         <p>${data.weather[0].description}</p>
-        <img src="http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png" class="weatherIcon">
-        <p>Temperature: ${data.main.temp} °C</p>
+        <img src="http://openweathermap.org/img/w/${data.weather[0].icon}.png" alt="Weather icon" class="weatherIcon">
+        <p>Temp: ${data.main.temp} &deg;C</p>
         <p>Humidity: ${data.main.humidity}%</p>
-        <p>Wind Speed: ${data.wind.speed} m/s</p>
+        <p>Wind: ${data.wind.speed} m/s</p>
     `;
 }
 
 function displayForecast(data) {
-    const forecastContainer = document.getElementById('forecast');
-    forecastContainer.innerHTML = '<h2>5-Day Forecast</h2>';
-    forecastContainer.innerHTML += '<div class="forecast-flex">';
+    const forecastDiv = document.getElementById('forecast');
+    forecastDiv.style.display = 'flex';
+    forecastDiv.innerHTML = '';
 
-    // Używamy obiektu, aby uzyskać unikalne dni
-    const forecastByDay = {};
-    data.list.forEach(item => {
-        const date = new Date(item.dt * 1000).toLocaleDateString();
-        if (!forecastByDay[date]) {
-            forecastByDay[date] = item;
-        }
-    });
+    // Pobierz datę bieżącą
+    let currentDate = new Date();
 
-    // Wyświetlamy tylko 5 dni
-    const dates = Object.keys(forecastByDay).slice(0, 5);
-    dates.forEach(date => {
-        const item = forecastByDay[date];
-        const forecastElement = document.createElement('div');
-        forecastElement.innerHTML = `
-            <p><strong>${new Date(item.dt * 1000).toLocaleDateString()}</strong></p>
-            <p>${item.weather[0].description}</p>
-            <img src="http://openweathermap.org/img/wn/${item.weather[0].icon}@2x.png" class="weatherIcon">
-            <p>Temp: ${item.main.temp} °C</p>
+    // Iteruj przez każdy dzień w prognozie
+    data.list.forEach((day, index) => {
+        // Dodaj odpowiednią liczbę dni do bieżącej daty
+        currentDate.setDate(currentDate.getDate() + 1);
+
+        // Wyświetl datę w formacie DD.MM
+        const formattedDate = currentDate.toLocaleDateString('pl-PL', { day: '2-digit', month: '2-digit' });
+
+        // Skróć opis pogody, aby zmieścił się w kontenerze
+        const shortDescription = day.weather[0].description.length > 20 ? day.weather[0].description.substring(0, 10) + '...' : day.weather[0].description;
+        
+        // Dodaj dane dla danego dnia do diva prognozy
+        forecastDiv.innerHTML += `
+        <div class="forecast-day">
+            <p>${formattedDate}</p>
+            <p>${shortDescription}</p>
+            <img src="http://openweathermap.org/img/w/${day.weather[0].icon}.png" alt="Weather icon" class="weatherIcon">
+            <p class="temp">Temp: ${day.main.temp.toFixed(1)} &deg;C</p> <!-- Zaokrąglamy temperaturę do jednego miejsca po przecinku -->
+            </div>
         `;
-        forecastContainer.querySelector('.forecast-flex').appendChild(forecastElement);
     });
-
-    forecastContainer.innerHTML += '</div>';
 }
+
